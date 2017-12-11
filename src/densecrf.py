@@ -14,23 +14,20 @@ class DenseCRF:
         self.num_labels = num_labels
         self.Q = np.zeros([self.height, self.width, self.num_labels])
         self.unary = np.zeros([self.height, self.width, self.num_labels])
+        self.n_iter = 1000;
         return
 
-    def exp_normlize(self, distrib):
+    def exp_normalize(self, distrib):
         before = np.exp(distrib)
-        after = before / np.sum(before, 2)
+        after = before / np.repeat(np.expand_dims(np.sum(before, 2), -1), self.num_labels, axis=2)
         return after
 
     def inference(self):
-        
-        return
+        Q = exp_normalize(-self.unary)
+        for i in range(0, self.n_iter):
+                        
 
     def train(self):
         return
 
 
-crf = DenseCRF(10, 10, 1, 3)
-
-Q = crf.exp_normlize(crf.unary)
-
-print(Q)
