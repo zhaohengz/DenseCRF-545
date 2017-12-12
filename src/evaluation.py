@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# from measure import predict
+from measure import predict
 import numpy as np
 import os
 import sys
