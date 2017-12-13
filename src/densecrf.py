@@ -2,6 +2,7 @@ import numpy as np
 import pairwise
 import cv2
 from compatibility import PottsCompatibility
+import math
 
 class DenseCRF:
 
@@ -60,10 +61,27 @@ class DenseCRF:
         return Q
         
 img = cv2.imread("test.ppm")
+anno = cv2.imread("anno.png")
+anno = np.mean(anno, axis=2).astype(np.int)
+print (np.max(anno))
+num_pixels = anno.shape[0] * anno.shape[1]
+unary = np.ones([21, num_pixels]) * -math.log(0.5 / 20)
+for i in range(0, anno.shape[0]):
+    for j in range(0, anno.shape[1]):
+        unary[anno[i, j], i * anno.shape[1] + j] = -math.log(0.5)
+print (unary[:, 0])
 crf = DenseCRF(img.shape[0], img.shape[1], 21)
+crf.set_unary(unary)
 crf.add_pairwise_gaussian(3 ,3, PottsCompatibility(3))
 crf.add_pairwise_bilateral(80, 80, 13, 13, 13, img, PottsCompatibility(10))
 Q = crf.inference(5)
+ans = np.argmax(Q, 0)
+ans = ans.reshape(anno.shape)
+ans = ans.astype(np.uint8)
+print (np.max(ans))
+cv2.imshow("111", ans * 10)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
                         
 
 
