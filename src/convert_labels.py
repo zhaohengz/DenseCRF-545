@@ -27,7 +27,7 @@ def main():
 
       if (len(img.shape) > 2):
         img = convert_from_color_segmentation(img)
-        imsave(os.path.join(path_converted, img_base_name.decode()) + ext, img)
+        imsave(os.path.join(path_converted, img_base_name.decode()) + '.ppm', img)
       else:
         print(img_name + " is not composed of three dimensions, therefore " 
               "shouldn't be processed by this script.\n"
