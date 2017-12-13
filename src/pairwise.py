@@ -23,7 +23,7 @@ class Kernel(object):
         self.lattice = permutohedral.Permutohedral()
         self.norm_type = norm_type
         self.kernel_type = kernel_type
-        self.feature = f
+        self.feature = f.astype(np.float32)
         self.init_lattice(self.feature)
            
     def init_lattice(self, f): 
@@ -38,10 +38,11 @@ class Kernel(object):
         else:
             self.norm = 1.0 / (self.norm + 1e-20)
 
+
         
     def filter(self, mat_in, transpose):
         if (self.norm_type == NormType.NORMALIZE_SYMMETRIC) or (self.norm_type == NormType.NORMALIZE_BEFORE and not transpose) or (self.norm_type == NormType.NORMALIZE_AFTER and transpose):
-            tmp = mat_in * np.diag(self.norm)
+            tmp = np.multiply(mat_in, self.norm[:, 0])
         else:
             tmp = mat_in
 
@@ -51,9 +52,8 @@ class Kernel(object):
         else:
             self.lattice.compute(tmp, tmp, False)
         
-
         if (self.norm_type == NormType.NORMALIZE_SYMMETRIC) or (self.norm_type == NormType.NORMALIZE_BEFORE and transpose) or (self.norm_type == NormType.NORMALIZE_AFTER and not transpose):
-            tmp = tmp * np.diag(self.norm)
+            tmp = np.multiply(tmp, self.norm[:, 0])
 
         return tmp
 

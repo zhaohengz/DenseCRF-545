@@ -45,7 +45,8 @@ class DenseCRF:
         return
 
     def exp_normalize(self, distrib):
-        before = np.exp(distrib)
+        before = distrib - np.max(distrib, axis=0)
+        before = np.exp(before)
         after = before / np.repeat(np.expand_dims(np.sum(before, 0), 0), self.num_labels, axis=0)
         return after
 
