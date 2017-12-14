@@ -3,7 +3,7 @@ import pairwise
 import cv2
 from compatibility import PottsCompatibility
 import math
-
+import scipy.stats as stats
 class DenseCRF:
 
     def __init__(self, height, width, num_labels):
@@ -42,8 +42,12 @@ class DenseCRF:
                 feature[2, i * self.width + j] = img[i, j, 2] / sr;
         self.add_pairwise_energy(pairwise.PairwisePotential(feature, function, kernel_type, normalization_type))
 
-    def kl_divergence(self, Q):
-        return
+    def kl_divergence(self, P,Q):
+        P_2d = np.array(P).reshape([1,self.num_labels])
+        P_3d = np.zeros([21,self.num_labels])
+        P_3d[P_2d,range(self.num_labels)]=1
+        vect_kl_divergence = np.vectorize(stats.entropy,otypes=[np.float],cache=False)
+        return vect_kl_divergence(P_3d,Q)
 
     def exp_normalize(self, distrib):
         before = distrib - np.max(distrib, axis=0)
