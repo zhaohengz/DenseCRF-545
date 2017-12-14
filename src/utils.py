@@ -38,6 +38,40 @@ def pascal_palette():
 
   return palette
 
+def pascal_palette_inv():
+  palette = {0:(  0,   0,   0),
+             1:(128,   0,   0),
+             2:(  0, 128,   0),
+             3:(128, 128,   0),
+             4:(  0,   0, 128),
+             5:(128,   0, 128),
+             6:(  0, 128, 128),
+             7:(128, 128, 128),
+             8:( 64,   0,   0),
+             9:(192,   0,   0),
+             10:( 64, 128,   0),
+             11:(192, 128,   0),
+             12:( 64,   0, 128),
+             13:(192,   0, 128),
+             14:( 64, 128, 128),
+             15:(192, 128, 128),
+             16:(  0,  64,   0),
+             17:(128,  64,   0),
+             18:(  0, 192,   0),
+             19:(128, 192,   0),
+             20:(  0,  64, 128) }
+  return palette
+
+def convert_to_color_segmentation(arr_2d):
+  arr_3d = np.zeros((arr_2d.shape[0], arr_2d.shape[1],3), dtype=np.uint8)
+  palette = pascal_palette_inv()
+  
+  for c, i in palette.items():
+      m = (arr_2d == np.array(c).reshape(1,1))
+      arr_3d[m]=i
+
+  return arr_3d
+
 def palette_demo():
   palette_list = pascal_palette().keys()
   palette = ()
