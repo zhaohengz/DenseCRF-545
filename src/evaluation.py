@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from measure import predict
+import prediction
 import numpy as np
 import os
 import sys
@@ -79,16 +79,19 @@ def evaluate_class(truth_dir, output_dir, txt_dir, class_idx):
     error = [];
     numunion = [];
     with open(txt_dir, 'rb') as f:
-        for img_name in f:
-            img_base_name = img_name.strip()
-            img_truth_name = os.path.join(truth_dir, img_base_name.decode()) + '.png'
-            img_output_name = os.path.join(output_dir, img_base_name.decode()) + '.png'
-            img_truth = imread(img_truth_name)
-            img_output = imread(img_output_name)
-            truth_data = convert_from_color_segmentation(img_truth)
-            output_data = convert_from_color_segmentation(img_output)
-            err, num = int_uni(truth_data, output_data, class_idx)
-            error = np.append(error, err)
-            numunion = np.append(numunion, num)
+        for name in f:
+            sp = name.split()
+            if sp[1] == '1':
+                img_name = sp[0]
+                img_base_name = img_name.strip()
+                img_truth_name = os.path.join(truth_dir, img_base_name.decode()) + '.png'
+                img_output_name = os.path.join(output_dir, img_base_name.decode()) + '.png'
+                img_truth = imread(img_truth_name)
+                img_output = imread(img_output_name)
+                truth_data = convert_from_color_segmentation(img_truth)
+                output_data = convert_from_color_segmentation(img_output)
+                err, num = int_uni(truth_data, output_data, class_idx)
+                error = np.append(error, err)
+                numunion = np.append(numunion, num)
 
     return 1 - np.sum(np.dot(error,numunion))/(np.sum(numunion))
