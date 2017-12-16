@@ -44,7 +44,7 @@ class DenseCRF:
 
     def kl_divergence(self,P,Q):
         P_2d = np.array(P).reshape([1,self.num_pixels])
-        P_3d = 1e-5*np.ones([21,self.num_pixels])
+        P_3d = 1e-9*np.ones([21,self.num_pixels])
         P_3d[P_2d,range(self.num_pixels)]=1
         return stats.entropy(Q,P_3d)
     
