@@ -25,6 +25,9 @@ if save_predict:
 	for (clsname,clsindex) in cls.items():
 		legend.append(mpatches.Patch(color=np.array(palette[clsindex])/255, label=clsname))
 
+#fcn_predict:	Give prediction result by fcn model
+#input:			im_name:	name of the image
+#output:		prediction: predicted label for each pixel as a matrix
 def fcn_predict(im_name):
 	fcn_result = scipy.io.loadmat(os.path.join(fcn_results_path,im_name))
 	score = fcn_result["raw_score"]
@@ -44,7 +47,9 @@ def fcn_predict(im_name):
 	return prediction
 
 truth_dir = r"E:\Projects@Ubuntu\VOCdevkit\VOC2012\VOCdevkit\VOC2012\SegmentationClass"
-#Call evaluation function
+#Call evaluation function, use the prediction function "fcn_predic" defined
 fcn_iou_cls, fcn_iou_img = eval.evaluate_IoU_class_general(truth_dir,fcn_predict,img_list_file)
+
+#Save results to mat file
 scipy.io.savemat(os.path.join(output_path,"fcn_iou_cls"),{"iou_cls":fcn_iou_cls})
 scipy.io.savemat(os.path.join(output_path,"fcn_iou_img"),fcn_iou_img)
