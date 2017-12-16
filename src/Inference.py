@@ -16,13 +16,13 @@ import utils
 import os.path as path
 
 Image_dir = "../../data/Images"
-Unary_dir = "../../data/Unary_images"
+Unary_dir = "/media/lijunyi/Seagate JIONG/results"
 Prediction_dir = "../../data/Prediction"
 
 with open("../../data/namelist/trainval.txt","r")  as f:
      lines = f.read().splitlines()
 
-for line in lines[0:4]:
+for line in lines:
     Image_name = str(line) +".jpg"
     Image_path = path.join(Image_dir,Image_name)
     Unary_name = str(line) +".mat"
