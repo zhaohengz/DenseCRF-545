@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-# Martin Kersner, m.kersner@gmail.com
-# 2016/01/25 
 
 from __future__ import print_function
 import os
