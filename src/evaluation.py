@@ -1,94 +1,56 @@
 #!/usr/bin/env python
-from measure import predict
+#from measure import predict
 import numpy as np
 import os
 import sys
 from skimage.io import imread,imsave
-from utils import convert_from_color_segmentation
+import utils
 
-# gen_image     : function to generate output image (via img = predict(img) function)
-# Inputs        : image_dir  : path of original image
-#                 output_dir : path to store the output image
-#                 txt_dir    : path of .txt file that stores name of original image
-def gen_image(image_dir, output_dir, txt_dir):
-    if not os.path.isdir(output_dir):
-        os.makedirs(output_dir)
-
-    with open(txt_dir, 'rb') as f:
-        for img_name in f:
-            img_base_name = img_name.strip()
-            img_name = os.path.join(image_dir, img_base_name.decode()) + '.png'
-            img = imread(img_name)
-            img = predict(img)
-            imsave(os.path.join(output_dir, img_base_name.decode()) + '.png', img)
-
-    exit()
-
-
-# gen_namelist  : Generate the list of image name and store as .txt file in a
-#                 target path
-# Inputs        :          txt_dir : path of .txt file to be operated
-#                       ourput_dir : path of .txt file to be generated
-#                 output_file_name : name of the output file
-def gen_namelist(txt_dir, output_dir, output_file_name):
-    if not os.path.isdir(output_dir):
-        os.makedirs(output_dir)
-    target = open(output_dir + output_file_name,'w')
-    with open(txt_dir, 'r') as f:
-        for string in f:
-            sp = string.split()
-            if sp[1] == '1':
-                target.write(sp[0]+'\n')
-    target.close()
-    exit()
-
-# gen_mask :  Generate the mask matrix of A. For elements in A equals to val,
-#             keep it, and replace other elements with 0
-# Inputs   :   A : matrix to be operated
-#            val : target value
-# Outputs  : masked matrix A
-def gen_mask(A, val):
-    m = np.size(A,0); n = np.size(A,1)
-    temA = np.absolute(val*np.ones((m,n)) - A)
-    maskA = np.ones((m,n)) - np.sign(temA)
-    return val*maskA.astype(int)
-
-
-# int_uni    : Compute the interacton over union accuracy of labeling matrix.
-# Inputs     :      A,B : matrix of two image labels(consisting of 1~20).
-#                 label : label of evaluated class
-# Outputs    : err : interaction over union error
-#              num : number of union pixels
-def int_uni(A, B, label):
-    mask_truth = gen_mask(A, label)
-    mask_output = gen_mask(B, label)
-    inter = gen_mask(mask_truth + mask_output, 2*label)
-    union = gen_mask(mask_truth + mask_output, label)
-    err = 1 - np.sum(inter)/(np.sum(inter)+2*np.sum(union))
-    num = (np.sum(inter)+2*np.sum(union))/(2*label)
-    return err, num
-
+#Calculate IoU for matrix A and B with a given label
+def int_uni_cls(A, B, label):
+    A_mask = (A==label)
+    B_mask = (B==label)
+    intersection = np.sum(np.bitwise_and(A_mask,B_mask))
+    union = np.sum(np.bitwise_or(A_mask,B_mask))
+    return intersection, union
 
 # evaluate_label : function to calculate the accuracy of image segmentation and labeling.
 # Inputs         : truth_dir  : path of groud truth image
-#                  output_dir : path of algorithm outputs image
+#                  outgenf    : a function with input argument as a specific image name 
+#                               and output as matrix for perdicted label for each pixel
 #                  txt_dir    : path of .txt file that stores name of image
 #                  class_idx  : equals to the 1~20 label, (0 for background)
 # Outputs        : pixel-wise accuracy, camputed through
-def evaluate_class(truth_dir, output_dir, txt_dir, class_idx):
-    error = [];
-    numunion = [];
-    with open(txt_dir, 'rb') as f:
-        for img_name in f:
-            img_base_name = img_name.strip()
-            img_truth_name = os.path.join(truth_dir, img_base_name.decode()) + '.png'
-            img_output_name = os.path.join(output_dir, img_base_name.decode()) + '.png'
-            img_truth = imread(img_truth_name)
-            img_output = imread(img_output_name)
-            truth_data = convert_from_color_segmentation(img_truth)
-            output_data = convert_from_color_segmentation(img_output)
-            err, num = int_uni(truth_data, output_data, class_idx)
-            error = np.append(error, err)
-            numunion = np.append(numunion, num)
+def evaluate_IoU_class_general(truth_dir, outgenf, imglist_file):
+    class_count = len(utils.pascal_classes())+1 #include background as a class
+    int_vec = [list() for i in range(class_count)]
+    union_vec = [list() for i in range(class_count)]
+    with open(imglist_file,"r") as imf:
+        im_names = imf.read().splitlines()
 
-    return 1 - np.sum(np.dot(error,numunion))/(np.sum(numunion))
+    im_counts = len(im_names)
+    #Store the IoU for each specific image
+    iou_img_dict = {}
+    int_vec = np.zeros((class_count,im_counts))
+    union_vec = np.zeros((class_count,im_counts))
+
+    ptr = 0;
+    for img_name in im_names:
+        img_truth_name = os.path.join(truth_dir, img_name) + '.png'
+        img_truth = imread(img_truth_name)
+        truth_data = utils.convert_from_color_segmentation(img_truth)
+        output_data = outgenf(img_name)
+        #Calculate IoU for each class
+        iou_img = np.zeros(class_count)
+        for class_idx in range(0,class_count):
+            int_i, uni_i = int_uni_cls(truth_data, output_data, class_idx)
+            if (int_i == 0 and uni_i == 0):
+                iou_img[class_idx] = np.NaN
+            else:
+                iou_img[class_idx] = int_i/uni_i
+            int_vec[class_idx,ptr] = int_i
+            union_vec[class_idx,ptr] = uni_i
+        iou_img_dict["img_"+img_name] = iou_img #add "img_" here to ensure variable name is valid in matlab
+        ptr = ptr + 1
+    iou_cls = [np.sum(int_vec[i])/np.sum(union_vec[i]) for i in range(class_count)]
+    return iou_cls, iou_img_dict
