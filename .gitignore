@@ -1,1 +1,3 @@
-data/*
+/.vs
+/src/__pycache__/*
+/.gitignore
