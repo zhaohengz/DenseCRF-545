@@ -6,7 +6,7 @@ import math
 import scipy.stats as stats
 class DenseCRF:
 
-    def __init__(self, height, width, num_labels):
+    def __init__(self, height, width, num_labels,Ground_truth=[]):
         self.height = height
         self.width = width
         self.num_pixels = self.height * self.width
@@ -14,7 +14,9 @@ class DenseCRF:
         self.Q = np.zeros([self.num_labels, self.width * self.height])
         self.unary = np.zeros([self.num_labels, self.width * self.height])
         self.pairwise = []
-        self.n_iter = 1000;
+        self.n_iter = 20
+        self.KL_divergence = np.zeros((1,self.n_iter))
+        self.Ground_truth = Ground_truth
         return
 
     def set_unary(self, unary):
@@ -43,7 +45,7 @@ class DenseCRF:
         self.add_pairwise_energy(pairwise.PairwisePotential(feature, function, kernel_type, normalization_type))
 
     def kl_divergence(self,P,Q):
-        P_2d = np.array(P).reshape([1,self.num_pixels])
+        P_2d = np.array(P).reshape((1,self.num_pixels))
         P_3d = 1e-9*np.ones([21,self.num_pixels])
         P_3d[P_2d,range(self.num_pixels)]=1
         return stats.entropy(Q,P_3d)
@@ -61,6 +63,7 @@ class DenseCRF:
             for pw in self.pairwise:
                 tmp = tmp - pw.apply(Q)
             Q = self.exp_normalize(tmp)
+            self.KL_divergence[0,i]=self.kl_divergence(self.Ground_truth,Q).mean()
         return Q
     
 

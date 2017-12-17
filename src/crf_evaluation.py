@@ -10,10 +10,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import scipy.io
-import evaluation as eval
 import os
 import utils
 from skimage.io import imread
+
 
 def outgenf(img_name):
     Prediction_dir = "../../data/Prediction"
@@ -26,8 +26,6 @@ def outgenf(img_name):
 Ground_truth_dir = "../../data/Ground_truth"
 Name_list_dir = "../../data/namelist/val.txt"
 output_path = "../../data/evaluation_results"
-
 iou_cls,iou_img_dict=eval.evaluate_IoU_class_general(Ground_truth_dir,outgenf,Name_list_dir)
-print(iou_cls)
 scipy.io.savemat(os.path.join(output_path,"iou_cls"),{"iou_cls":iou_cls})
 scipy.io.savemat(os.path.join(output_path,"iou_img_dict"),iou_img_dict)
