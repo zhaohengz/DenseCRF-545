@@ -1,3 +1,5 @@
+# Author: Zhaoheng Zheng
+
 import numpy as np
 import pairwise
 import cv2

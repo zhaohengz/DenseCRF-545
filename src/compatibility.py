@@ -1,3 +1,5 @@
+# Author: Zhaoheng Zheng
+
 import numpy as np
 
 class PottsCompatibility(object):

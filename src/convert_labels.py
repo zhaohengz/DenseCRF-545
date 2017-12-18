@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# Author: Zhaoheng Zheng
 
 from __future__ import print_function
 import os
