@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Dec 16 14:13:06 2017
-
-@author: lijunyi
-"""
+'''
+Perform grid_search to two main parameters of the CRF model: theta_alpha and theta_beta
+Author: Junyi Li(junyili@umich.edu)
+'''
 
 import numpy as np
 from Inference import inference
@@ -47,4 +46,3 @@ for i,theta1 in enumerate(np.linspace(1,121,3)):
         iou_vec[:,i,j] = [np.sum(int_vec[i])/np.sum(union_vec[i]) for i in range(21)]
         scipy.io.savemat(os.path.join(output_path,"grid_search_"+str(i*3+j)),{"grid_search":iou_vec[:,i,j]})
 scipy.io.savemat(os.path.join(output_path,"grid_search"),{"grid_search":iou_vec})
-        

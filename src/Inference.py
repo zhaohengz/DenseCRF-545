@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Dec 14 11:00:37 2017
-
-@author: lijunyi
-"""
+'''
+Make Inference over a group of images
+Author: Junyi Li(junyili@umich.edu)
+'''
 
 import numpy as np
 import scipy.io as io
@@ -16,7 +15,7 @@ import os.path as path
 from skimage.io import imread
 
 def inference(theta,line,Image_dir,Unary_dir,Prediction_dir,if_save):
-    
+
     Image_name = str(line) +".jpg"
     Image_path = path.join(Image_dir,Image_name)
     Unary_name = str(line) +".mat"

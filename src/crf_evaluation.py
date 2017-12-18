@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Dec 15 23:14:47 2017
-
-@author: lijunyi
-"""
+'''
+Compute the IoU of Ground_truth and CRF-based Predictions
+Author: Junyi Li(junyili@umich.edu)
+'''
 
 import numpy as np
 import matplotlib.pyplot as plt
