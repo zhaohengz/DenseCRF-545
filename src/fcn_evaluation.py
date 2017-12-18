@@ -1,3 +1,7 @@
+'''
+Evalutaion of FCN model
+author: Jiong Zhu(jiongzhu@umich.edu)
+'''
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -6,18 +10,18 @@ import evaluation as eval
 import os
 import utils
 
-output_path = "fcn_eval_result/"
-fcn_results_path = ""
-img_list_file = "imglist.txt"
+output_path = "../data/fcn_eval_result/"
+fcn_results_path = "../data/fcn_result"
+img_list_file = "../data/val.txt"
+truth_dir = "../data/VOCdevkit/VOC2012/SegmentationClass"
 
 if not os.path.exists(output_path):
 	os.makedirs(output_path)
 
 #Switch of whether save the labeled image
-save_predict=True
+save_predict = True
 
 if save_predict:
-
 	#Generate legend for plotting the inference result
 	cls = utils.pascal_classes()
 	palette = utils.pascal_palette_inv()
@@ -46,7 +50,7 @@ def fcn_predict(im_name):
 
 	return prediction
 
-truth_dir = r"E:\Projects@Ubuntu\VOCdevkit\VOC2012\VOCdevkit\VOC2012\SegmentationClass"
+
 #Call evaluation function, use the prediction function "fcn_predic" defined
 fcn_iou_cls, fcn_iou_img = eval.evaluate_IoU_class_general(truth_dir,fcn_predict,img_list_file)
 

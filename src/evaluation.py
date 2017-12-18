@@ -1,3 +1,7 @@
+'''
+Shared functions for evaluation of all models (including IoU and a general evaluation process)
+Author: Chen Wang(zoeumich@umich.edu), Jiong Zhu (jiongzhu@umich.edu)
+'''
 #!/usr/bin/env python
 #from measure import predict
 import numpy as np
