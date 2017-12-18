@@ -15,6 +15,8 @@ import caffe
 import scipy.io
 import os
 
+os.chdir("fcn.berkeleyvision.org-master")
+
 #List of image names to calculate (no extension needed just as VOC imageset list)
 img_list_file = "imglist.txt"
 
