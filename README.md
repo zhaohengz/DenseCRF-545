@@ -56,6 +56,8 @@ evaluation.evaluate_IoU_class_general(truth_dir, outgenf, imglist_file):
 ```
 ## Bilateral filtering
 
+Please include ```permutohedral.so``` and ```libpermutohedral.so``` in your ```LD_LIBRARY_DIR```
+
 ## Install FCN
 
 
