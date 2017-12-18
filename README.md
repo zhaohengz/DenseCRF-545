@@ -74,4 +74,4 @@ Our algorithms are tested on PASCAL VOC 2012 dataset, you can acquire this datas
 * Junyi Li,
 * Chen Wang,
 * Jiong Zhu,
-* Zhaoheng Zheng,
+* Zhaoheng Zheng
