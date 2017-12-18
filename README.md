@@ -9,7 +9,7 @@ The project implements Fully Connected Conditional Random Field based image segm
 
 ## Getting Started
 
-When doing inference, Fully Connected CRF needs the output of other classifiers as its starting point,such as TexonBoost and Fully Convolutional Network(FCN) and so on. In our approach, we use FCN. The FCN Installation section shows how to setup FCN. Besides a basis classifier, you also need to link "libpermutohedral.so" to perform permutohedral bilateral filtering, which is an important part of inference process,you can find instructions in bilateral filtering section. with all these prerequisites, you can define a densecrf object to perform inference on single image, to perform inference on  a group of images, you can use Inference method; To compute IoU over a set of images, use evaluation method.
+When doing inference, Fully Connected CRF needs the output of other classifiers as its starting point,such as TexonBoost and Fully Convolutional Network(FCN) and so on. In our approach, we use FCN. The FCN Installation section shows how to setup FCN. Besides a basis classifier, you also need to link "libpermutohedral.so" to perform permutohedral bilateral filtering, which is an important part of inference process,you can find instructions in bilateral filtering section. with all these prerequisites, you can define a densecrf object to perform inference on single image, to perform inference on  a group of images, you can use Inference method; to compute IoU over a set of images, use evaluation method.
 
 ### DenceCRF Object
 
